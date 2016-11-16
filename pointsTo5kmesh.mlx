@@ -1,0 +1,32 @@
+<!DOCTYPE FilterScript>
+<FilterScript>	
+ <filter name="Poisson-disk Sampling">
+  <Param name="SampleNum" description="Number of samples" value="10000" type="RichInt" tooltip="The desired number of samples. The ray of the disk is calculated according to the sampling density."/>
+  <Param name="Radius" description="Explicit Radius" value="0" min="0" max="246.131" type="RichAbsPerc" tooltip="If not zero this parameter override the previous parameter to allow exact radius specification"/>
+  <Param name="MontecarloRate" description="MonterCarlo OverSampling" value="20" type="RichInt" tooltip="The over-sampling rate that is used to generate the intial Montecarlo samples (e.g. if this parameter is &lt;i>K&lt;/i> means that&lt;i>K&lt;/i> x &lt;i>poisson sample&lt;/i> points will be used). The generated Poisson-disk samples are a subset of these initial Montecarlo samples. Larger this number slows the process but make it a bit more accurate."/>
+  <Param name="SaveMontecarlo" description="Save Montecarlo" value="false" type="RichBool" tooltip="If true, it will generate an additional Layer with the montecarlo sampling that was pruned to build the poisson distribution."/>
+  <Param name="ApproximateGeodesicDistance" description="Approximate Geodesic Distance" value="false" type="RichBool" tooltip="If true Poisson Disc distances are computed using an approximate geodesic distance, e.g. an euclidean distance weighted by a function of the difference between the normals of the two points."/>
+  <Param name="Subsample" description="Base Mesh Subsampling" value="true" type="RichBool" tooltip="If true the original vertices of the base mesh are used as base set of points. In this case the SampleNum should be obviously much smaller than the original vertex number.&lt;br>Note that this option is very useful in the case you want to subsample a dense point cloud."/>
+  <Param name="RefineFlag" description="Refine Existing Samples" value="false" type="RichBool" tooltip="If true the vertices of the below mesh are used as starting vertices, and they will utterly refined by adding more and more points until possible. "/>
+  <Param name="RefineMesh" description="Samples to be refined" value="0" type="RichMesh" tooltip="Used only if the above option is checked. "/>
+  <Param name="BestSampleFlag" description="Best Sample Heuristic" value="true" type="RichBool" tooltip="If true it will use a simple heuristic for choosing the samples. At a small cost (it can slow a bit the process) it usually improve the maximality of the generated sampling. "/>
+  <Param name="BestSamplePool" description="Best Sample Pool Size" value="10" type="RichInt" tooltip="Used only if the Best Sample Flag is true. It control the number of attempt that it makes to get the best sample. It is reasonable that it is smaller than the Montecarlo oversampling factor."/>
+  <Param name="ExactNumFlag" description="Exact number of samples" value="false" type="RichBool" tooltip="If requested it will try to do a dicotomic search for the best poisson disk radius that will generate the requested number of samples with a tolerance of the 0.5%. Obviously it takes much longer."/>
+  <Param name="RadiusVariance" description="Radius Variance" value="1" type="RichFloat" tooltip="The radius of the disk is allowed to vary between r and r*var. If this parameter is 1 the sampling is the same of the Poisson Disk Sampling"/>
+ </filter>
+ <filter name="Change the current layer">
+  <Param tooltip="The name of the current mesh" value="1" name="mesh" description="Mesh" type="RichMesh"/>
+ </filter>
+ <filter name="Compute normals for point sets">
+  <Param name="K" description="Neighbour num" value="10" type="RichInt" tooltip="The number of neighbors used to estimate normals."/>
+  <Param name="smoothIter" description="Smooth Iteration" value="0" type="RichInt" tooltip="The number of smoothing iteration done on the p used to estimate and propagate normals."/>
+  <Param name="flipFlag" description="Flip normals w.r.t. viewpoint" value="true" type="RichBool" tooltip="If the 'viewpoint' (i.e. scanner position) is known, it can be used to disambiguate normals orientation, so that all the normals will be oriented in the same direction."/>
+  <Param name="viewPos" description="Viewpoint Pos." type="RichPoint3f" x="0" tooltip="The viewpoint position can be set by hand (i.e. getting the current viewpoint) or it can be retrieved from mesh camera, if the viewpoint position is stored there." y="0" z="0"/>
+ </filter>
+ <filter name="Surface Reconstruction: Poisson">
+  <Param name="OctDepth" description="Octree Depth" value="10" type="RichInt" tooltip="Set the depth of the Octree used for extracting the final surface. Suggested range 5..10. Higher numbers mean higher precision in the reconstruction but also higher processing times. Be patient.&#xa;"/>
+  <Param name="SolverDivide" description="Solver Divide" value="6" type="RichInt" tooltip="This integer argument specifies the depth at which a block Gauss-Seidel solver is used to solve the Laplacian equation.&#xa;Using this parameter helps reduce the memory overhead at the cost of a small increase in reconstruction time. &#xa;In practice, the authors have found that for reconstructions of depth 9 or higher a subdivide depth of 7 or 8 can reduce the memory usage.&#xa;The default value is 8.&#xa;"/>
+  <Param name="SamplesPerNode" description="Samples per Node" value="1" type="RichFloat" tooltip="This floating point value specifies the minimum number of sample points that should fall within an octree node as the octree&#xa;construction is adapted to sampling density. For noise-free samples, small values in the range [1.0 - 5.0] can be used.&#xa;For more noisy samples, larger values in the range [15.0 - 20.0] may be needed to provide a smoother, noise-reduced, reconstruction.&#xa;The default value is 1.0."/>
+  <Param name="Offset" description="Surface offsetting" value="1" type="RichFloat" tooltip="This floating point value specifies a correction value for the isosurface threshold that is chosen.&#xa;Values &lt; 1 means internal offsetting, >1 external offsetting.Good values are in the range 0.5 .. 2.&#xa;The default value is 1.0 (no offsetting)."/>
+ </filter>
+</FilterScript>

@@ -1,0 +1,14 @@
+function updateFunc(h_obj,evt)
+   % iterator = varargin{1};
+   % dirList = varargin{2};
+   global listOfOutput
+   global iterator 
+    if strcmp(evt.Key,'rightarrow')
+        iterator = iterator + 1;
+        i
+    elseif strcmp(evt.Key,'leftarrow')
+        iterator = iterator - 1;
+    end
+    model = load([listOfOutput(iterator).folder '\\' listOfOutput(iterator).name]);
+    draw_acc(model,listOfOutput(iterator).name);
+end
